@@ -34,7 +34,7 @@ struct ChatView: View {
         VStack {
             ScrollView(.vertical) {
                 ForEach(model.messages, id: \.self) { message in
-                    ChatRow(text: "Hellow world", type: .sent)
+                    ChatRow(text: message.text, type: message.type)
                         .padding(3)
                 }
             }
@@ -47,6 +47,7 @@ struct ChatView: View {
             }
         }
         .navigationTitle(otherUsername)
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             model.otherUsername = otherUsername
             model.observeChat()
