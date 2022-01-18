@@ -9,8 +9,10 @@ import SwiftUI
 
 struct SearchView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    
+    @EnvironmentObject var model: AppStateModel
     @State private var text: String = ""
-    let usernames = ["Julia"]
+    @State var usernames:[String] = []
     let completion: ((String) -> Void)
     init(completion: @escaping ((String) -> Void)) {
         self.completion = completion
@@ -21,7 +23,13 @@ struct SearchView: View {
             TextField("Username...", text: $text)
                 .modifier(CustomField())
             Button("Search") {
+                guard !text.trimmingCharacters(in: .whitespaces).isEmpty else {
+                    return
+                }
                 
+                model.searchUsers(queryText: text, completion: {usernames in
+                    self.usernames = usernames
+                })
             }
             List {
                 ForEach(usernames, id: \.self) {name in

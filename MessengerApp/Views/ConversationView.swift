@@ -8,16 +8,16 @@
 import SwiftUI
 
 struct ConversationListView: View {
-    let usernames = ["Joe", "Jill", "Bob"]
-    
+        
     @EnvironmentObject var model: AppStateModel
     @State private var otherUsername: String = ""
     @State private var showChat = false
+    @State var showSearch = false
     
     var body: some View {
         NavigationView {
             ScrollView {
-                ForEach(usernames, id: \.self) { name in
+                ForEach(model.conversations, id: \.self) { name in
                     NavigationLink(
                         destination: ChatView(otherUsername: name),
                         label: {
@@ -52,12 +52,15 @@ struct ConversationListView: View {
                     //show search view
                     NavigationLink(
                         destination: SearchView() {name in
+                            self.showSearch = false
+                            
                             DispatchQueue.main.asyncAfter(deadline: .now()+1) {
                                 self.otherUsername = name
                                 self.showChat = true
                             }
                             
                         },
+                        isActive: $showSearch,
                         label: {
                             Image(systemName: "magnifyingglass")
                         })
@@ -69,12 +72,18 @@ struct ConversationListView: View {
             .fullScreenCover(isPresented: $model.showingSignIn , content: {
                 SignInView()
             })
+            .onAppear {
+                guard model.auth.currentUser != nil else {
+                    return
+                }
+                model.getConversations()
+            }
         }
         
         
     }
     func signOut() {
-        
+        model.signOut()
     }
 }
 

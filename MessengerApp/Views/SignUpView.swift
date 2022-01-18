@@ -33,10 +33,16 @@ struct SignUpView: View {
                 VStack {
                     TextField("Email Address", text: $email)
                         .modifier(CustomField())
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
                     TextField("Username", text: $username)
                         .modifier(CustomField())
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
                     SecureField("Password", text: $password)
                         .modifier(CustomField())
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
                     Button(action: {
                         self.signUp()
                     }, label: {
@@ -68,7 +74,7 @@ struct SignUpView: View {
                   return
               }
                 
-       
+        model.signUp(email: email, username: username, password: password)
     }
 }
 

@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct CustomField: ViewModifier {
+    
+    
+    
     func body(content: Content) -> some View {
         content
             .padding()
@@ -19,7 +22,7 @@ struct CustomField: ViewModifier {
 }
 
 struct ChatView: View {
-    
+    @EnvironmentObject var model: AppStateModel
     @State private var message: String = ""
     
     let otherUsername: String
@@ -30,10 +33,10 @@ struct ChatView: View {
     var body: some View {
         VStack {
             ScrollView(.vertical) {
-                ChatRow(text: "Hello World", type: .sent)
-                    .padding(5)
-                ChatRow(text: "Hello World", type: .received)
-                    .padding(5)
+                ForEach(model.messages, id: \.self) { message in
+                    ChatRow(text: "Hellow world", type: .sent)
+                        .padding(3)
+                }
             }
             HStack {
                 TextField("Message...", text: $message)
@@ -44,6 +47,10 @@ struct ChatView: View {
             }
         }
         .navigationTitle(otherUsername)
+        .onAppear {
+            model.otherUsername = otherUsername
+            model.observeChat()
+        }
     }
 }
 
